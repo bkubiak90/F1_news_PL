@@ -1,13 +1,13 @@
 package bkubiak90.f1news;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Xml;
-import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
 
+    private NewsAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
 
         news = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
+        adapter = new NewsAdapter(this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        new GetNews().execute();
     }
 
     private class GetNews extends AsyncTask<Void, Void, Void> {
@@ -48,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            adapter.setNews(news);
         }
 
         private InputStream getInputStream() {
@@ -99,7 +112,8 @@ public class MainActivity extends AppCompatActivity {
                             if (tagName.equals("title")) {
                                 title = getContent(parser, "title");
                             } else if (tagName.equals("description")) {
-                                description = getContent(parser, "description");
+                                String fullDesc = getContent(parser, "description");
+                                description = fullDesc.substring(0, 340) + "...Czytaj dalej";
                             } else if (tagName.equals("link")) {
                                 link = getContent(parser, "link");
                             } else if (tagName.equals("pubdate")) {
@@ -108,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                                 skipTag(parser);
                             }
                         }
-                        NewsItem item = new NewsItem(title, description, link, date);
+                        NewsItem item = new NewsItem(title, description, date, link);
                         news.add(item);
                     } else {
                         skipTag(parser);
