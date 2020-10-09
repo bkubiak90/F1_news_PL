@@ -116,8 +116,8 @@ public class MainActivity extends AppCompatActivity {
                                 description = fullDesc.substring(0, 340) + "...Czytaj dalej";
                             } else if (tagName.equals("link")) {
                                 link = getContent(parser, "link");
-                            } else if (tagName.equals("pubdate")) {
-                                date = getContent(parser, "pubdate");
+                            } else if (tagName.equals("pubDate")) {
+                                date = getContent(parser, "pubDate");
                             } else {
                                 skipTag(parser);
                             }

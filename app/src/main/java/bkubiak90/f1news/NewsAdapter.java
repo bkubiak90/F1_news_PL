@@ -1,6 +1,7 @@
 package bkubiak90.f1news;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,14 +31,16 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.txtTitle.setText(news.get(position).getTitle());
         holder.txtDescription.setText(news.get(position).getDescription());
         holder.txtDate.setText(news.get(position).getDate());
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 08.10.2020 navigate user to website
+                Intent intent = new Intent(context, WebsiteActivity.class);
+                intent.putExtra("url", news.get(position).getLink());
+                context.startActivity(intent);
             }
         });
     }
