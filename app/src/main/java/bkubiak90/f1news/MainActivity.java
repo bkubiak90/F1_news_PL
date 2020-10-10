@@ -113,11 +113,12 @@ public class MainActivity extends AppCompatActivity {
                                 title = getContent(parser, "title");
                             } else if (tagName.equals("description")) {
                                 String fullDesc = getContent(parser, "description");
-                                description = fullDesc.substring(0, 340) + "...Czytaj dalej";
+                                description = fullDesc.substring(0, 340) + " ...Czytaj dalej";
                             } else if (tagName.equals("link")) {
                                 link = getContent(parser, "link");
                             } else if (tagName.equals("pubDate")) {
-                                date = getContent(parser, "pubDate");
+                                String fullDate =  getContent(parser, "pubDate");
+                                date = fullDate.substring(0, 26);
                             } else {
                                 skipTag(parser);
                             }
@@ -131,6 +132,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        private String removeBr(String content) {
+            return content.replaceAll("<br>", "");
+        }
+
         private String getContent (XmlPullParser parser, String tagName) throws IOException, XmlPullParserException {
             String content = "";
             parser.require(XmlPullParser.START_TAG, null, tagName);
@@ -139,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 content = parser.getText();
                 parser.next();
             }
-            return content;
+            return removeBr(content);
         }
 
         private void skipTag (XmlPullParser parser) throws XmlPullParserException, IOException {
